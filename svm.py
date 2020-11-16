@@ -10,8 +10,9 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import cross_val_score
 
-data_set = pd.read_csv('/Users/wguo/GitRepo/adml/pima-indians-diabetes.csv')
+data_set = pd.read_csv('/Users/wguo/GitRepo/adml/datasets/pima-indians-diabetes.csv')
 data = data_set.values[:,:]
 
 y = data[:,8]
@@ -35,3 +36,8 @@ predictions = clf.predict(X_test)
 print("SVM")
 print(classification_report(y_test,predictions))
 print("AC",accuracy_score(y_test,predictions))
+
+### https://scikit-learn.org/stable/modules/cross_validation.html
+scores = cross_val_score(clf, X_train, y_train, cv=5)
+print(scores)
+
