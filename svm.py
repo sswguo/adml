@@ -11,6 +11,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import LinearSVC
 
 data_set = pd.read_csv('/Users/wguo/GitRepo/adml/datasets/pima-indians-diabetes.csv')
 data = data_set.values[:,:]
@@ -19,13 +21,13 @@ y = data[:,8]
 X = data[:,:8]
 X_train,X_test,y_train,y_test = train_test_split(X,y)
 
-### SVM Classifier 
+### SVM Classifier https://scikit-learn.org/stable/modules/svm.html
 print("==========================================")   
 from sklearn.svm import SVC
 clf = SVC(kernel='rbf', probability=True)
 clf.fit(X_train,y_train)
 predictions = clf.predict(X_test)
-print("SVM")
+print("SVM kernel:rbf")
 print(classification_report(y_test,predictions))
 print("AC",accuracy_score(y_test,predictions))
 
@@ -33,7 +35,17 @@ print("AC",accuracy_score(y_test,predictions))
 clf = SVC(kernel='linear', C=1)
 clf.fit(X_train,y_train)
 predictions = clf.predict(X_test)
-print("SVM")
+print("SVM kernel:linear")
+print(classification_report(y_test,predictions))
+print("AC",accuracy_score(y_test,predictions))
+
+### Pipeline
+clf = Pipeline([
+    ('scaler', StandardScaler()),
+    ('svm_clf', SVC(kernel='linear', C=1)),
+])
+clf.fit(X_train,y_train)
+print("Pipeline SVM kernel:linear")
 print(classification_report(y_test,predictions))
 print("AC",accuracy_score(y_test,predictions))
 
