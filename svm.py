@@ -15,17 +15,28 @@ from sklearn.model_selection import learning_curve
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.svm import SVC
+from sklearn.metrics import roc_curve, auc
 
+def draw_ROC_curve(y_test,y_predict):
+    false_positive_rate,true_positive_rate,thresholds=roc_curve(y_test, y_predict)
+    roc_auc=auc(false_positive_rate, true_positive_rate)
+    plt.title('ROC')
+    plt.plot(false_positive_rate, true_positive_rate,'b',label='AUC = %0.2f'% roc_auc)
+    plt.legend(loc='lower right')
+    plt.plot([0,1],[0,1],'r--')
+    plt.ylabel('TPR')
+    plt.xlabel('FPR')
+    plt.show()
 
-data_set = pd.read_csv('/Users/wguo/GitRepo/adml/datasets/pima-indians-diabetes.csv')
+data_set = pd.read_csv('/Users/wguo/GitRepo/adml/datasets/ads_original.csv')
 data = data_set.values[:,:]
 '''
 plt.figure(figsize=(16,12))
 sns.heatmap(data_set.corr(),annot=True,fmt=".2f")
 plt.show()
 '''
-y = data[:,8]
-X = data[:,:8]
+y = data[:,6]
+X = data[:,:6]
 print(X)
 print(y)
 X_train,X_test,y_train,y_test = train_test_split(X,y)
@@ -43,6 +54,8 @@ predictions = clf.predict(X_test)
 print("LinearSVC")
 print(classification_report(y_test,predictions))
 print("AC",accuracy_score(y_test,predictions))
+
+draw_ROC_curve(y_test, predictions)
 
 ### https://scikit-learn.org/stable/modules/cross_validation.html
 scores = cross_val_score(clf, X_train, y_train, cv=5)
